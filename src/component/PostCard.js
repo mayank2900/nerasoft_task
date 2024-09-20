@@ -31,7 +31,7 @@ export const PostCard = ({ detail, key, setCurrentData }) => {
 
     return (
         <Card key={key} w="100%" m={2}>
-            <Image alt="blog" src={image} w="100%" objectFit="cover" />
+            {image ? <Image alt="blog" src={image} w="100%" objectFit="cover" /> : null}
             <Box p={4}>
                 <Flex align="start" justify="space-between">
                     <Text fontWeight="bold" fontSize={18}>{title}</Text>

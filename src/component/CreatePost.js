@@ -87,7 +87,7 @@ export const CreatePost = () => {
                                 }
                             />
                         </FormControl>
-                        <FormControl isRequired>
+                        <FormControl>
                             <FormLabel>Content</FormLabel>
                             <Controller
                                 control={control}
