@@ -27,20 +27,19 @@ export const CreatePost = () => {
         }
     }, [setPostDetail]);
 
-    const onSubmit = async (data) => {
+    const onSubmit = (data) => {
         const { title, description, content } = data || {}
-        const newPost = {
+        let newPost = {
             id: Date.now(),
             title,
             description,
             content,
-            image: previewImage,
+            image: previewImage || null,
             createdAt: dayjs()
         };
-
         let previousData = [...postDetail];
         if (postId) {
-            const updatedPosts = previousData.map(post => post.id === postId ? postData : post);
+            const updatedPosts = previousData.map(post => post.id == postId ? newPost : post);
             localStorage.setItem('posts', JSON.stringify(updatedPosts));
             setPostDetail(updatedPosts)
         } else {

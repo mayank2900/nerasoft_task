@@ -19,10 +19,15 @@ export const UploadImage = ({ getImageURl, defaultValue }) => {
             reader.readAsDataURL(file);
         }
     }
+    useEffect(() => {
+        if (defaultValue) {
+            setPreviewImage(defaultValue)
+        }
+    }, [defaultValue])
 
     useEffect(() => {
-        setPreviewImage(defaultValue)
-    }, [defaultValue])
+        getImageURl(previewImage)
+    }, [getImageURl, previewImage])
 
     const handleOpenFile = () => {
         ref.current.click()
@@ -31,12 +36,6 @@ export const UploadImage = ({ getImageURl, defaultValue }) => {
     const handleRemoveImage = () => {
         setPreviewImage(null)
     }
-
-    useEffect(() => {
-        if (previewImage) {
-            getImageURl(previewImage)
-        }
-    }, [getImageURl, previewImage])
 
     return (
         <Box>
