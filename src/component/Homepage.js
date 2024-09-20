@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Grid, Heading, HStack } from "@chakra-ui/react"
+import { Box, Button, Center, Flex, Grid, Heading } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 import { PostCard } from "./PostCard"
 import { useEffect, useState } from "react"

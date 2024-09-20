@@ -1,7 +1,7 @@
 import { Button, HStack, Text } from "@chakra-ui/react"
 import { useEffect, useMemo } from "react";
 
-export const Pagination = ({ setCurrentData, currentData, currentPage, setCurrentPage }) => {
+export const Pagination = ({ setCurrentData, currentPage, setCurrentPage }) => {
     const postsPerPage = 5;
 
     const totalData = useMemo(() => JSON.parse(localStorage.getItem('posts')), [])
@@ -22,7 +22,7 @@ export const Pagination = ({ setCurrentData, currentData, currentPage, setCurren
         const indexOfFirstPost = indexOfLastPost - postsPerPage;
         const posts = totalData.slice(indexOfFirstPost, indexOfLastPost);
         setCurrentData(posts)
-    }, [currentPage, totalData])
+    }, [currentPage, totalData, setCurrentData])
 
     return (
         <HStack mt={5} align="center">

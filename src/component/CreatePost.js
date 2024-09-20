@@ -13,18 +13,20 @@ export const CreatePost = () => {
         desc: "",
         title: ""
     })
-    const [postDetail, setPostDetail] = useState()
+    const [postDetail, setPostDetail] = useState([])
     const params = useSearchParams()
     const postId = params.get("id")
     const [previewImage, setPreviewImage] = useState()
 
     const postData = useMemo(() => postDetail?.find(detail => detail.id == postId), [postDetail, postId])
+   
     useEffect(() => {
         const storedPosts = localStorage.getItem('posts');
         if (storedPosts) {
             setPostDetail(JSON.parse(storedPosts));
         }
-    }, []);
+    }, [setPostDetail]);
+
     const onSubmit = async (data) => {
         const { title, description, content } = data || {}
         const newPost = {
@@ -91,7 +93,7 @@ export const CreatePost = () => {
                                 control={control}
                                 name="content"
                                 render={({ field }) =>
-                                    <Textarea placeholder="Enter content" maxLength={200} {...field} />
+                                    <Textarea placeholder="Enter content" {...field} />
                                 }
                             />
                         </FormControl>
