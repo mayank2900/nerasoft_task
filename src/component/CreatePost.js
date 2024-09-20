@@ -1,44 +1,70 @@
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Textarea } from "@chakra-ui/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { SuccessAlert } from "../util/Helper"
+import dayjs from "dayjs"
+import { useEffect, useMemo, useState } from "react"
+import { UploadImage } from "./UploadImage"
 
 export const CreatePost = () => {
     const router = useRouter()
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, reset } = useForm({
         content: "",
         desc: "",
         title: ""
     })
-    const onSubmit = async (data) => {
-        const { title, description, content, image } = data || {}
-        const newPost = { id: Date.now(), title, description, content, image, createdAt: new Date().toISOString() };
+    const [postDetail, setPostDetail] = useState()
+    const params = useSearchParams()
+    const postId = params.get("id")
+    const [previewImage, setPreviewImage] = useState()
 
-        // Send the new post to the API
-        await fetch('/api/posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newPost),
-        });
-        // Save to localStorage
-        let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-        posts.push(newPost);
-        localStorage.setItem('posts', JSON.stringify(posts));
-        SuccessAlert("Post Created Successfully")
+    const postData = useMemo(() => postDetail?.find(detail => detail.id == postId), [postDetail, postId])
+    useEffect(() => {
+        const storedPosts = localStorage.getItem('posts');
+        if (storedPosts) {
+            setPostDetail(JSON.parse(storedPosts));
+        }
+    }, []);
+    const onSubmit = async (data) => {
+        const { title, description, content } = data || {}
+        const newPost = {
+            id: Date.now(),
+            title,
+            description,
+            content,
+            image: previewImage,
+            createdAt: dayjs()
+        };
+
+        let previousData = [...postDetail];
+        if (postId) {
+            const updatedPosts = previousData.map(post => post.id === postId ? postData : post);
+            localStorage.setItem('posts', JSON.stringify(updatedPosts));
+            setPostDetail(updatedPosts)
+        } else {
+            previousData.push(newPost);
+            localStorage.setItem('posts', JSON.stringify(previousData));
+            setPostDetail(previousData)
+        }
+        SuccessAlert(`Post ${postId ? "Updated" : "Created"} Successfully`)
         router.push("/")
     }
+
+    useEffect(() => {
+        if (postId && postData) {
+            const { title, description, content, image } = postData || {}
+            reset({ title, description, content })
+            setPreviewImage(image)
+        }
+    }, [postData, reset, postId])
+
     return (
-        <Box minH="100vh" bg="white" display="flex" flexDir="row" justifyContent="center">
-            <Box w="70%" border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
-                <Text textAlign="center" fontWeight="bold" fontSize={20}>Create Blog Post</Text>
+        <Box bg="white" p={6} display="flex" flexDir="row" justifyContent="center">
+            <Box w={{ xl: "40%", lg: "40%", md: "60%", base: "100%" }} border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
+                <Text textAlign="center" fontWeight="bold" fontSize={20}>{`${postId ? "Update" : "Create"} Blog Post`}</Text>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack my={3} gap={3}>
-                        <FormControl>
-                            <FormLabel>Image</FormLabel>
-                            <Input type="file" {...field} />
-                        </FormControl>
+                        <UploadImage getImageURl={(url) => setPreviewImage(url)} defaultValue={previewImage} />
                         <FormControl isRequired>
                             <FormLabel>Title</FormLabel>
                             <Controller
@@ -69,7 +95,7 @@ export const CreatePost = () => {
                                 }
                             />
                         </FormControl>
-                        <Button w="full" colorScheme="blue" type="submit">Submit</Button>
+                        <Button w="full" colorScheme="blue" type="submit">{postId ? "Update" : "Submit"}</Button>
                     </Stack>
                 </form>
             </Box>

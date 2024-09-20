@@ -25,8 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ChakraProvider>
-      {children}
-    </ChakraProvider>
+    <html lang="en">
+      <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+        <link rel="icon"  />
+      </head>
+      <body>
+        <ChakraProvider>
+          {children}
+        </ChakraProvider>
+      </body>
+    </html>
   );
 }
