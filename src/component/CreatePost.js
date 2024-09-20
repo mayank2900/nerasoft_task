@@ -49,6 +49,7 @@ export const CreatePost = () => {
         }
         SuccessAlert(`Post ${postId ? "Updated" : "Created"} Successfully`)
         router.push("/")
+        reset()
     }
 
     useEffect(() => {
